@@ -1,0 +1,332 @@
+@import "tailwindcss";
+
+/* Display font for the top navigation (loaded from Google Fonts in index.html, with system fallbacks) */
+@theme {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ===================================================
+   STRATEGY STUDIO LAYOUT
+   One source of truth for the left asset sidebar geometry. The sidebar (CustomAssetSidebar) and the
+   expanded map editor layer (PhotoMapCanvas) both read these, so the expanded map is always laid out
+   BESIDE the sidebar and can never cover it.
+   =================================================== */
+:root {
+  --studio-sidebar-w: 18rem; /* width of the left sidebar on >= lg screens */
+  --studio-top-offset: 5.5rem; /* distance from the viewport top: below the sticky header pill */
+  --studio-gap: 1rem;
+}
+
+@media (max-width: 767px) {
+  :root {
+    /* the header grows by the mobile tab row on small screens */
+    --studio-top-offset: 7.5rem;
+  }
+}
+
+/* Left sidebar: sticky column on desktop (it stays put while the page and the map are used),
+   normal stacked block on small screens. */
+@media (min-width: 1024px) {
+  .studio-sidebar {
+    position: sticky;
+    top: var(--studio-top-offset);
+    align-self: flex-start;
+    width: var(--studio-sidebar-w);
+    max-height: calc(100vh - var(--studio-top-offset) - var(--studio-gap));
+  }
+}
+
+/* Expanded map editor: a fixed layer that fills the viewport EXCEPT the header and the left sidebar. */
+.placement-expanded-layer {
+  position: fixed;
+  z-index: 40; /* above page content and the sidebar's column, below the sticky header (z-50) */
+  top: var(--studio-top-offset);
+  right: var(--studio-gap);
+  bottom: var(--studio-gap);
+  left: var(--studio-gap);
+  min-width: 0;
+  max-width: calc(100vw - 2 * var(--studio-gap));
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .placement-expanded-layer {
+    left: calc(var(--studio-sidebar-w) + var(--studio-gap));
+    max-width: calc(100vw - var(--studio-sidebar-w) - 2 * var(--studio-gap));
+  }
+}
+
+/* Reserve the scrollbar space so the centered layout (and the header) never shifts between short and long tabs */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* ===================================================
+   TDS TACTICS A4 WEB-EDITOR STYLES (Tiptap / ProseMirror)
+   =================================================== */
+
+/* A4 Page Dimensions: Exactly 210mm x 297mm with 25.4mm (1-inch) margins */
+.a4-page-sheet {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 25.4mm;
+  box-sizing: border-box;
+  position: relative;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ProseMirror Core & Typography inside A4 Sheet */
+.tiptap.ProseMirror {
+  outline: none;
+  min-height: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Green & Violet Accents for Headings as requested by design brief */
+.tiptap h1 {
+  color: #4ade80; /* Bright Emerald Green Accent */
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+  border-bottom: 2px solid rgba(74, 222, 128, 0.25);
+  padding-bottom: 0.25rem;
+}
+
+.tiptap h2 {
+  color: #c084fc; /* Violet / Purple Accent */
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.015em;
+  border-bottom: 1px solid rgba(192, 132, 252, 0.25);
+  padding-bottom: 0.2rem;
+}
+
+.tiptap h3 {
+  color: #f1f5f9;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.a4-theme-light .tiptap h3 {
+  color: #1e293b;
+}
+
+.tiptap p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Lists */
+.tiptap ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap li {
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+/* Blockquote */
+.tiptap blockquote {
+  border-left: 4px solid #a855f7;
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* Tables inside Tiptap */
+.tiptap table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 1rem 0;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.a4-theme-dark .tiptap table {
+  border: 1px solid #374151;
+}
+
+.a4-theme-light .tiptap table {
+  border: 1px solid #d1d5db;
+}
+
+.tiptap th,
+.tiptap td {
+  min-width: 1em;
+  padding: 8px 12px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+  font-size: 0.8125rem;
+}
+
+.a4-theme-dark .tiptap th,
+.a4-theme-dark .tiptap td {
+  border: 1px solid #2d2f39;
+}
+
+.a4-theme-light .tiptap th,
+.a4-theme-light .tiptap td {
+  border: 1px solid #e5e7eb;
+}
+
+.a4-theme-dark .tiptap th {
+  background-color: #1a1b24;
+  font-weight: 700;
+  color: #c084fc;
+}
+
+.a4-theme-light .tiptap th {
+  background-color: #f3f4f6;
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+.tiptap .selectedCell:after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0; right: 0; top: 0; bottom: 0;
+  background: rgba(168, 85, 247, 0.18);
+  pointer-events: none;
+}
+
+/* Inline Code */
+.tiptap code {
+  background-color: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  font-size: 0.8em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Images */
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 0.75rem auto;
+  display: block;
+}
+
+/* Horizontal Rule */
+.tiptap hr {
+  border: none;
+  border-top: 1px solid rgba(168, 85, 247, 0.3);
+  margin: 1.25rem 0;
+}
+
+/* ===================================================
+   A4 MULTI-PAGE PAGINATION SYSTEM FOR STRATEGY STUDIO
+   =================================================== */
+
+/* Fixed standard A4 page (210mm x 297mm) with 25.4mm margins */
+.a4-page-view {
+  width: 210mm;
+  min-height: 297mm;
+  max-width: 210mm;
+  box-sizing: border-box;
+  padding: 25.4mm;
+  position: relative;
+  page-break-after: always;
+  break-after: page;
+}
+
+/* Print simulation */
+@media print {
+  body {
+    background-color: transparent !important;
+  }
+  .a4-page-view {
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+}
+
+/* ===================================================
+   PLACEMENT MAP EDITOR - export / print safety
+   Editing aids (toolbars, selection ring) and the editor's zoom/pan never leak into the exported strategy.
+   =================================================== */
+@media print {
+  .placement-ui {
+    display: none !important;
+  }
+  .placement-viewport {
+    cursor: default !important;
+  }
+  .placement-stage {
+    transform: none !important;
+  }
+}
+
+/* ===================================================
+   STRATEGY STUDIO TABLES - per-table resizing + LOADOUTS layout
+   =================================================== */
+
+/* The frame is only a width box: it is never part of printed/exported output as UI. */
+.tds-table-frame {
+  box-sizing: border-box;
+}
+
+/* The LOADOUTS table is a size container, so hero images and names scale with the TABLE width
+   (not the window). That keeps them readable in Portrait, Landscape and when the table is resized. */
+.loadout-cq {
+  container-type: inline-size;
+}
+
+/* Fallback sizes for browsers without container query units */
+.loadout-hero-box {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex-shrink: 0;
+}
+
+.loadout-name,
+.loadout-player-name {
+  overflow-wrap: anywhere;
+}
+
+@supports (width: 1cqw) {
+  .loadout-hero-box {
+    width: clamp(2.25rem, 9.5cqw, 4.5rem);
+    height: clamp(2.25rem, 9.5cqw, 4.5rem);
+  }
+  .loadout-name {
+    font-size: clamp(0.625rem, 1.9cqw, 0.8125rem);
+  }
+  .loadout-player-name {
+    font-size: clamp(0.6875rem, 2cqw, 0.875rem);
+  }
+}
+
+@media print {
+  .tds-table-handle {
+    display: none !important;
+  }
+}

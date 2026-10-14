@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Remix Remix TDS Tactics Vault",
+  "description": "База стратегий и генератор тактик для Tower Defense Simulator с фильтрами, ссылками на Google Документы и авторами в черно-белом стиле.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
